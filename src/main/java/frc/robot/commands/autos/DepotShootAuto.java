@@ -7,8 +7,10 @@ import choreo.trajectory.Trajectory;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+import frc.robot.commands.ResilientTrajectoryFollower;
 import frc.robot.commands.autos.utils.AutoCommands;
 import frc.robot.commands.autos.utils.AutoContext;
 import frc.robot.commands.autos.utils.AutoOption;
@@ -19,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -49,9 +52,6 @@ public final class DepotShootAuto {
             return Optional.empty();
         }
 
-        Optional<Trajectory<SwerveSample>> tunnelTrajectory =
-                AutoUtil.loadTrajectory(ChoreoTraj.TunnelPath.name(), false);
-
         return Optional.of(
                 AutoUtil.trajectoryOption(
                         trajectories,
@@ -60,12 +60,23 @@ public final class DepotShootAuto {
                                     ctx.autoFactory()
                                             .newRoutine("Depot" + (isSafe ? "Safe" : "Aggressive"));
                             AutoTrajectory first = routine.trajectory(trajectories.get(0));
-                            AutoTrajectory second = routine.trajectory(trajectories.get(1));
-                            AutoTrajectory third = routine.trajectory(trajectories.get(2));
-                            AutoTrajectory fourth = routine.trajectory(trajectories.get(3));
-                            Optional<AutoTrajectory> tunnel =
-                                    tunnelTrajectory.map(routine::trajectory);
-                            AutoUtil.bindEvents(ctx, first, second, third, fourth);
+                            Map<String, Command> eventBindings = AutoUtil.createEventBindings(ctx);
+                            ResilientTrajectoryFollower firstFollow =
+                                    ctx.drive()
+                                            .followTrajectoryResilient(
+                                                    trajectories.get(0), eventBindings);
+                            ResilientTrajectoryFollower secondFollow =
+                                    ctx.drive()
+                                            .followTrajectoryResilient(
+                                                    trajectories.get(1), eventBindings);
+                            ResilientTrajectoryFollower thirdFollow =
+                                    ctx.drive()
+                                            .followTrajectoryResilient(
+                                                    trajectories.get(2), eventBindings);
+                            ResilientTrajectoryFollower fourthFollow =
+                                    ctx.drive()
+                                            .followTrajectoryResilient(
+                                                    trajectories.get(3), eventBindings);
                             routine.active()
                                     .onTrue(
                                             Commands.sequence(
@@ -79,31 +90,19 @@ public final class DepotShootAuto {
                                                                             AutoCommands
                                                                                     .getAutoDelay()),
                                                             Set.of()),
-                                                    first.spawnCmd()));
+                                                    firstFollow));
 
-                            first.done().onTrue(AutoCommands.shootThenFollow(ctx, 2.5, second));
-                            AutoCommands.retryTrigger(routine, first)
-                                    .onTrue(
-                                            AutoCommands.recoverThenFollow(
-                                                    ctx, first, tunnel, 2.5, second));
+                            routine.observe(firstFollow.done())
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 2.5, secondFollow));
 
-                            second.done().onTrue(AutoCommands.shootThenFollow(ctx, 2.5, third));
-                            AutoCommands.retryTrigger(routine, second)
-                                    .onTrue(
-                                            AutoCommands.recoverThenFollow(
-                                                    ctx, second, tunnel, 2.5, third));
+                            routine.observe(secondFollow.done())
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 2.5, thirdFollow));
 
-                            third.done().onTrue(AutoCommands.shootThenFollow(ctx, 10.0, fourth));
-                            AutoCommands.retryTrigger(routine, third)
-                                    .onTrue(
-                                            AutoCommands.recoverThenFollow(
-                                                    ctx, third, tunnel, 10.0, fourth));
+                            routine.observe(thirdFollow.done())
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 10.0, fourthFollow));
 
-                            fourth.done().onTrue(AutoCommands.shootThenFollow(ctx, 10.0, third));
-                            AutoCommands.retryTrigger(routine, fourth)
-                                    .onTrue(
-                                            AutoCommands.recoverThenFollow(
-                                                    ctx, fourth, tunnel, 10.0, third));
+                            routine.observe(fourthFollow.done())
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 10.0, thirdFollow));
 
                             return routine;
                         }));

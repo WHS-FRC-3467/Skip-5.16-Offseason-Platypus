@@ -17,6 +17,8 @@ package frc.robot;
 
 import au.grapplerobotics.CanBridge;
 
+import choreo.util.ChoreoAllianceFlipUtil;
+
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.DriveMotorArrangement;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerMotorArrangement;
@@ -135,6 +137,16 @@ public class Robot extends LoggedRobot {
 
         // Warms up elastic function call to prevent delay during enable of auto
         Elastic.selectTab(1);
+
+        ChoreoAllianceFlipUtil.getFlipper();
+        FieldConstants.initialize();
+        CommandScheduler.getInstance()
+                .schedule(
+                        robotContainer
+                                .testCommand
+                                .command()
+                                .ignoringDisable(true)
+                                .withTimeout(0.1));
     }
 
     /**

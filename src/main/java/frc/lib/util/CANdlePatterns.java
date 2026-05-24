@@ -42,8 +42,10 @@ public class CANdlePatterns {
     }
 
     /**
+     * Creates a scrolling fill pattern.
+     *
      * @param velocity how long it takes for one LED to be filled
-     * @param color
+     * @param color fill color
      * @return WPIlib LEDPattern
      */
     public LEDPattern scrollFill(double velocity, Color color) {
@@ -73,10 +75,10 @@ public class CANdlePatterns {
     }
 
     /**
-     * fire like LED pattern with randomized flickers
+     * Creates a fire-like LED pattern with randomized flickers.
      *
-     * @param frameRate
-     * @param ledSpacing
+     * @param frameRate scroll frame rate
+     * @param ledSpacing distance between LEDs
      * @return WPIlib LEDPattern
      */
     public LEDPattern fireScroll(double frameRate, Distance ledSpacing) {
@@ -97,7 +99,7 @@ public class CANdlePatterns {
      * was featured in his shows Knight Rider and Battle Star Galactica
      *
      * @param velocity The amount of time it takes for a single LED to update, passed in as Hertz
-     * @param color
+     * @param color scanner color
      * @param size Size of the scrolling
      * @param buffer Which LED Buffer to operate on
      * @param bounceMode String representation of {@link
@@ -111,14 +113,15 @@ public class CANdlePatterns {
             long now = RobotController.getTime();
 
             int bufLen = reader.getLength();
-            
+
             double wereToBounce = 0; // Where the scanner should bounce
-            wereToBounce = switch (bounceMode) {
-                case "Front" -> bufLen - size;
-                case "Back" -> bufLen + size;
-                case "Center" -> Math.floor(bufLen / 2);
-                default -> 0;
-            };
+            wereToBounce =
+                    switch (bounceMode) {
+                        case "Front" -> bufLen - size;
+                        case "Back" -> bufLen + size;
+                        case "Center" -> Math.floor(bufLen / 2.0);
+                        default -> 0;
+                    };
 
             final double periodMicros =
                     Hertz.of(velocity).asPeriod().in(Microseconds) * wereToBounce;

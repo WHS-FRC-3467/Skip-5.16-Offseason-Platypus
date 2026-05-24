@@ -19,8 +19,12 @@ import choreo.auto.AutoTrajectory;
 import choreo.trajectory.SwerveSample;
 import choreo.trajectory.Trajectory;
 
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+import frc.robot.commands.ResilientTrajectoryFollower;
 import frc.robot.commands.autos.utils.AutoCommands;
 import frc.robot.commands.autos.utils.AutoContext;
 import frc.robot.commands.autos.utils.AutoOption;
@@ -31,12 +35,18 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 /** Native Choreo routine for the depot-side multi-piece autonomous variants. */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class DelayedBumpAuto {
+    private static final Alert TRAJECTORIES_MISSING =
+            new Alert(
+                    "Delayed Bump Auto Trajectories Missing, Auto(s) Unavailable",
+                    AlertType.kError);
+
     /** Builds the safe or aggressive delayedBump autonomous routine. */
     public static Optional<AutoOption> create(AutoContext ctx, boolean isSafe) {
         List<String> names =
@@ -46,11 +56,13 @@ public final class DelayedBumpAuto {
                                 ? ChoreoTraj.DelayedBumpSafe2.name()
                                 : ChoreoTraj.DelayedBump2.name());
 
-        Optional<Trajectory<SwerveSample>> bumpTrajectory =
-                AutoUtil.loadTrajectory(ChoreoTraj.BumpPath.name(), false);
-
         List<Trajectory<SwerveSample>> trajectories =
                 AutoUtil.loadTrajectories(names, false).orElse(null);
+        if (trajectories == null) {
+            TRAJECTORIES_MISSING.set(true);
+            return Optional.empty();
+        }
+
         return Optional.of(
                 AutoUtil.trajectoryOption(
                         trajectories,
@@ -61,9 +73,15 @@ public final class DelayedBumpAuto {
                                                     "DelayedBump"
                                                             + (isSafe ? "Safe" : "Aggressive"));
                             AutoTrajectory first = routine.trajectory(trajectories.get(0));
-                            AutoTrajectory second = routine.trajectory(trajectories.get(1));
-                            Optional<AutoTrajectory> bump = bumpTrajectory.map(routine::trajectory);
-                            AutoUtil.bindEvents(ctx, first, second);
+                            Map<String, Command> eventBindings = AutoUtil.createEventBindings(ctx);
+                            ResilientTrajectoryFollower firstFollow =
+                                    ctx.drive()
+                                            .followTrajectoryResilient(
+                                                    trajectories.get(0), eventBindings);
+                            ResilientTrajectoryFollower secondFollow =
+                                    ctx.drive()
+                                            .followTrajectoryResilient(
+                                                    trajectories.get(1), eventBindings);
                             routine.active()
                                     .onTrue(
                                             Commands.sequence(
@@ -77,19 +95,13 @@ public final class DelayedBumpAuto {
                                                                             AutoCommands
                                                                                     .getAutoDelay()),
                                                             Set.of()),
-                                                    first.spawnCmd()));
+                                                    firstFollow));
 
-                            first.done().onTrue(AutoCommands.shootThenFollow(ctx, 3.0, second));
-                            AutoCommands.retryTrigger(routine, first)
-                                    .onTrue(
-                                            AutoCommands.recoverThenFollow(
-                                                    ctx, first, bump, 3.0, second));
+                            routine.observe(firstFollow.done())
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 3.0, secondFollow));
 
-                            second.done().onTrue(AutoCommands.shootThenFollow(ctx, 10.0, second));
-                            AutoCommands.retryTrigger(routine, second)
-                                    .onTrue(
-                                            AutoCommands.recoverThenFollow(
-                                                    ctx, second, bump, 10.0, second));
+                            routine.observe(secondFollow.done())
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 10.0, secondFollow));
                             return routine;
                         }));
     }
