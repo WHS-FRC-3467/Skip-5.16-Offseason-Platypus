@@ -20,7 +20,9 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -108,6 +110,30 @@ public final class AutoUtil {
                             ctx.shooter()
                                     .spinUpShooterToHubDistance(Meters.of(distanceFromHubMeters)));
         }
+    }
+
+    /**
+     * Creates a mapping of Choreo event names to the Commands they should trigger.
+     *
+     * <p>Used by {@link frc.robot.commands.ResilientTrajectoryFollower} to fire events at
+     * trajectory-time rather than wall-clock time, so events naturally pause during recovery.
+     *
+     * @param ctx the auto context providing subsystem references
+     * @return a map of event name to the Command to schedule when the event fires
+     */
+    public static Map<String, Command> createEventBindings(AutoContext ctx) {
+        double distanceFromHubMeters =
+                ChoreoVars.Poses.NeutralShoot.getTranslation()
+                        .minus(FieldConstants.Hub.INNER_CENTER_POINT.toTranslation2d())
+                        .getNorm();
+
+        Map<String, Command> bindings = new HashMap<>();
+        bindings.put("ExtendIntake", ctx.intake().intake());
+        bindings.put("RetractIntake", ctx.intake().retractIntake());
+        bindings.put(
+                "Spinup",
+                ctx.shooter().spinUpShooterToHubDistance(Meters.of(distanceFromHubMeters)));
+        return bindings;
     }
 
     /** Loads a single Choreo trajectory and mirrors it when the caller requests it. */

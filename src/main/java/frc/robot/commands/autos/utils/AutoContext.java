@@ -3,7 +3,9 @@ package frc.robot.commands.autos.utils;
 import choreo.auto.AutoFactory;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
+import frc.lib.util.FieldUtil;
 import frc.robot.RobotState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.indexer.IndexerSuperstructure;
@@ -47,7 +49,12 @@ public record AutoContext(
                         (trajectory, starting) ->
                                 Logger.recordOutput(
                                         "Odometry/Trajectory",
-                                        starting ? trajectory.getPoses() : new Pose2d[] {}));
+                                        starting
+                                                ? FieldUtil.apply(trajectory.getPoses())
+                                                : new Pose2d[] {}));
+
+        // Warm up choreo
+        CommandScheduler.getInstance().schedule(autoFactory.warmupCmd());
         return new AutoContext(drive, intake, indexer, tower, shooter, robotState, autoFactory);
     }
 }

@@ -125,13 +125,21 @@ public class AutoCommands {
      * Shoots the currently held note, stows the hood, retracts the intake, then starts the next
      * trajectory.
      */
-    public static Command shootThenFollow(
-            AutoContext ctx, double timeoutSeconds, AutoTrajectory next) {
+    public static Command shootThenFollow(AutoContext ctx, double timeoutSeconds, Command next) {
         return Commands.sequence(
                 shootOnly(ctx, timeoutSeconds),
                 stowHood(ctx.shooter()),
                 retractIntake(ctx),
-                next.spawnCmd());
+                next.asProxy());
+    }
+
+    /**
+     * Shoots the currently held note, stows the hood, retracts the intake, then spawns the next
+     * Choreo trajectory.
+     */
+    public static Command shootThenFollow(
+            AutoContext ctx, double timeoutSeconds, AutoTrajectory next) {
+        return shootThenFollow(ctx, timeoutSeconds, next.spawnCmd());
     }
 
     /**
@@ -304,7 +312,7 @@ public class AutoCommands {
                 .finallyDo(() -> Logger.recordOutput("AutoCommands/RetryPathingStatus", "DONE"));
     }
 
-    private static Command shootOnly(AutoContext ctx, double timeoutSeconds) {
+    public static Command shootOnly(AutoContext ctx, double timeoutSeconds) {
         return shootCommand(
                 ctx.drive(),
                 ctx.intake(),
@@ -314,7 +322,7 @@ public class AutoCommands {
                 timeoutSeconds);
     }
 
-    private static Command retractIntake(AutoContext ctx) {
+    public static Command retractIntake(AutoContext ctx) {
         return ctx.intake().retractIntake().asProxy().withTimeout(0.5);
     }
 }

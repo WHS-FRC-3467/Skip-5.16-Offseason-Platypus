@@ -7,8 +7,10 @@ import choreo.trajectory.Trajectory;
 
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+import frc.robot.commands.ResilientTrajectoryFollower;
 import frc.robot.commands.autos.utils.AutoCommands;
 import frc.robot.commands.autos.utils.AutoContext;
 import frc.robot.commands.autos.utils.AutoOption;
@@ -19,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -53,9 +56,6 @@ public final class NeutralAuto {
             return Optional.empty();
         }
 
-        Optional<Trajectory<SwerveSample>> tunnelTrajectory =
-                AutoUtil.loadTrajectory(ChoreoTraj.TunnelPath.name(), shouldMirror);
-
         return Optional.of(
                 AutoUtil.trajectoryOption(
                         trajectories,
@@ -67,11 +67,19 @@ public final class NeutralAuto {
                                                             + (isSafe ? "Safe" : "Aggressive")
                                                             + (shouldMirror ? "Right" : "Left"));
                             AutoTrajectory first = routine.trajectory(trajectories.get(0));
-                            AutoTrajectory second = routine.trajectory(trajectories.get(1));
-                            AutoTrajectory third = routine.trajectory(trajectories.get(2));
-                            Optional<AutoTrajectory> tunnel =
-                                    tunnelTrajectory.map(routine::trajectory);
-                            AutoUtil.bindEvents(ctx, first, second, third);
+                            Map<String, Command> eventBindings = AutoUtil.createEventBindings(ctx);
+                            ResilientTrajectoryFollower firstFollow =
+                                    ctx.drive()
+                                            .followTrajectoryResilient(
+                                                    trajectories.get(0), eventBindings);
+                            ResilientTrajectoryFollower secondFollow =
+                                    ctx.drive()
+                                            .followTrajectoryResilient(
+                                                    trajectories.get(1), eventBindings);
+                            ResilientTrajectoryFollower thirdFollow =
+                                    ctx.drive()
+                                            .followTrajectoryResilient(
+                                                    trajectories.get(2), eventBindings);
                             routine.active()
                                     .onTrue(
                                             Commands.sequence(
@@ -85,25 +93,16 @@ public final class NeutralAuto {
                                                                             AutoCommands
                                                                                     .getAutoDelay()),
                                                             Set.of()),
-                                                    first.spawnCmd()));
+                                                    firstFollow));
 
-                            first.done().onTrue(AutoCommands.shootThenFollow(ctx, 3.0, second));
-                            AutoCommands.retryTrigger(routine, first)
-                                    .onTrue(
-                                            AutoCommands.recoverThenFollow(
-                                                    ctx, first, tunnel, 3.0, second));
+                            routine.observe(firstFollow.done())
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 3.0, secondFollow));
 
-                            second.done().onTrue(AutoCommands.shootThenFollow(ctx, 10.0, third));
-                            AutoCommands.retryTrigger(routine, second)
-                                    .onTrue(
-                                            AutoCommands.recoverThenFollow(
-                                                    ctx, second, tunnel, 10.0, third));
+                            routine.observe(secondFollow.done())
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 10.0, thirdFollow));
 
-                            third.done().onTrue(AutoCommands.shootThenFollow(ctx, 10.0, second));
-                            AutoCommands.retryTrigger(routine, third)
-                                    .onTrue(
-                                            AutoCommands.recoverThenFollow(
-                                                    ctx, third, tunnel, 10.0, second));
+                            routine.observe(thirdFollow.done())
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 10.0, secondFollow));
 
                             return routine;
                         }));

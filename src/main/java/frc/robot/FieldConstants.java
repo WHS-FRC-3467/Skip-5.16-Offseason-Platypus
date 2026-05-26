@@ -34,6 +34,21 @@ import java.nio.file.Path;
  * perspective of the blue alliance station
  */
 public class FieldConstants {
+    public static void initialize() {
+        noOp(LinesVertical.CENTER);
+        noOp(LinesHorizontal.CENTER);
+        noOp(Hub.HEIGHT);
+        noOp(LeftBump.DEPTH);
+        noOp(RightBump.DEPTH);
+        noOp(LeftTrench.DEPTH);
+        noOp(RightTrench.DEPTH);
+        noOp(Tower.DEPTH);
+        noOp(Depot.DEPTH);
+        noOp(Outpost.HEIGHT.in(Meters));
+    }
+
+    public static void noOp(double d) {}
+
     public static final FieldType FIELD_TYPE = FieldType.ANDYMARK;
 
     public static final AprilTagLayoutType DEFAULT_APRIL_TAG_TYPE = AprilTagLayoutType.OFFICIAL;

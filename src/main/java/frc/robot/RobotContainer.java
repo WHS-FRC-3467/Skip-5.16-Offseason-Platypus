@@ -91,8 +91,10 @@ public class RobotContainer {
 
     // Dashboard inputs
     private final LoggedDashboardChooser<AutoOption> autoChooser;
+    public final AutoOption testCommand;
     public final Field2d autoPreviewField = new Field2d();
     private Pose2d startPose = new Pose2d(); // Initialize start pose for auto dashboard tab
+    private Command cachedAutoCommand = null;
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
@@ -121,6 +123,8 @@ public class RobotContainer {
         // Preload Autos
         autoChooser.addOption("PreloadAuto", PreloadAuto.create(ctx));
 
+        testCommand = NeutralAuto.create(ctx, false, true).orElseGet(() -> PreloadAuto.create(ctx));
+
         // Neutral Autos
         NeutralAuto.create(ctx, false, false)
                 .ifPresent(a -> autoChooser.addOption("Aggressive-Left", a));
@@ -142,6 +146,7 @@ public class RobotContainer {
                 auto -> {
                     if (auto == null) {
                         autoPreviewField.getObject("path").setPoses(new Pose2d[] {});
+                        cachedAutoCommand = null;
                         return;
                     }
                     var pathPoses =
@@ -153,7 +158,7 @@ public class RobotContainer {
 
                     autoPreviewField.getObject("path").setPoses(pathPoses);
 
-                    auto.command();
+                    cachedAutoCommand = auto.command();
                 });
 
         autoChooser.addOption(
@@ -415,7 +420,13 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         AutoOption option = autoChooser.get();
-        return option == null ? Commands.none() : option.command();
+        if (option == null) {
+            return Commands.none();
+        }
+        if (cachedAutoCommand == null) {
+            cachedAutoCommand = option.command();
+        }
+        return cachedAutoCommand;
     }
 
     /**
