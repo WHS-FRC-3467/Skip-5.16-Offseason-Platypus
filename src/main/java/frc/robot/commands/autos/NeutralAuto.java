@@ -42,13 +42,13 @@ public final class NeutralAuto {
         List<String> names =
                 isSafe
                         ? List.of(
-                                ChoreoTraj.NeutralSafe1.name(),
-                                ChoreoTraj.NeutralSafe2.name(),
-                                ChoreoTraj.Neutral2.name())
+                                ChoreoTraj.C1678Safe1.name(),
+                                ChoreoTraj.C16782.name(),
+                                ChoreoTraj.C16783.name())
                         : List.of(
-                                ChoreoTraj.Neutral1.name(),
-                                ChoreoTraj.NeutralSafe2.name(),
-                                ChoreoTraj.Neutral2.name());
+                                ChoreoTraj.C16781.name(),
+                                ChoreoTraj.C16782.name(),
+                                ChoreoTraj.C16783.name());
         List<Trajectory<SwerveSample>> trajectories =
                 AutoUtil.loadTrajectories(names, shouldMirror).orElse(null);
         if (trajectories == null) {
@@ -101,8 +101,7 @@ public final class NeutralAuto {
                             routine.observe(secondFollow.done())
                                     .onTrue(AutoCommands.shootThenFollow(ctx, 10.0, thirdFollow));
 
-                            routine.observe(thirdFollow.done())
-                                    .onTrue(AutoCommands.shootThenFollow(ctx, 10.0, secondFollow));
+                            routine.observe(thirdFollow.done()).onTrue(AutoCommands.fullSend(ctx));
 
                             return routine;
                         }));
