@@ -38,7 +38,7 @@ import frc.lib.util.FieldUtil;
 import frc.lib.util.LoggedDashboardChooser;
 import frc.lib.util.VisionOdometryCharacterizer;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.DriveToPose;
+import frc.robot.commands.FullSendToPose;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.autos.tuning.FeedforwardCharacterizationAuto;
 import frc.robot.commands.autos.tuning.WheelCharacterizationAuto;
@@ -134,15 +134,6 @@ public class RobotContainer {
         NeutralAuto.create(ctx, false, true).ifPresent(a -> autoChooser.addOption("Safe-Left", a));
         NeutralAuto.create(ctx, true, true).ifPresent(a -> autoChooser.addOption("Safe-Right", a));
 
-        // Depot Autos
-        DepotShootAuto.create(ctx, false)
-                .ifPresent(a -> autoChooser.addOption("Aggressive-Depot", a));
-        DepotShootAuto.create(ctx, true).ifPresent(a -> autoChooser.addOption("Safe-Depot", a));
-
-        // Delayed Bump Autos
-        DelayedBumpAuto.create(ctx, false)
-                .ifPresent(a -> autoChooser.addOption("Aggressive-Bump", a));
-        DelayedBumpAuto.create(ctx, true).ifPresent(a -> autoChooser.addOption("Safe-Bump", a));
         autoChooser.onChange(
                 auto -> {
                     if (auto == null) {
@@ -409,7 +400,7 @@ public class RobotContainer {
         // Drivetrain Commands
         SmartDashboard.putData(
                 "Drive to Start Pose",
-                new DriveToPose(drive, () -> startPose)
+                new FullSendToPose(drive, () -> startPose)
                         .withDistanceTolerance(Meters.of(0.04))
                         .withAngularTolerance(Degrees.of(3)));
     }

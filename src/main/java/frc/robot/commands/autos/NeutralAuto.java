@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
+import frc.robot.FieldConstants;
 import frc.robot.commands.ResilientTrajectoryFollower;
 import frc.robot.commands.autos.utils.AutoCommands;
 import frc.robot.commands.autos.utils.AutoContext;
@@ -31,6 +32,8 @@ public final class NeutralAuto {
     private static final Alert TRAJECTORIES_MISSING =
             new Alert("Neutral Auto Trajectories Missing, Auto(s) Unavailable", AlertType.kError);
 
+    private static final double yOffset = 7.530;
+
     /**
      * Builds the selected neutral auto variant.
      *
@@ -42,13 +45,13 @@ public final class NeutralAuto {
         List<String> names =
                 isSafe
                         ? List.of(
-                                ChoreoTraj.NeutralSafe1.name(),
-                                ChoreoTraj.NeutralSafe2.name(),
-                                ChoreoTraj.Neutral2.name())
+                                ChoreoTraj.C1678Safe1.name(),
+                                ChoreoTraj.C16782.name(),
+                                ChoreoTraj.C16783.name())
                         : List.of(
-                                ChoreoTraj.Neutral1.name(),
-                                ChoreoTraj.NeutralSafe2.name(),
-                                ChoreoTraj.Neutral2.name());
+                                ChoreoTraj.C16781.name(),
+                                ChoreoTraj.C16782.name(),
+                                ChoreoTraj.C16783.name());
         List<Trajectory<SwerveSample>> trajectories =
                 AutoUtil.loadTrajectories(names, shouldMirror).orElse(null);
         if (trajectories == null) {
@@ -96,13 +99,19 @@ public final class NeutralAuto {
                                                     firstFollow));
 
                             routine.observe(firstFollow.done())
-                                    .onTrue(AutoCommands.shootThenFollow(ctx, 3.0, secondFollow));
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 5.0, secondFollow));
 
                             routine.observe(secondFollow.done())
-                                    .onTrue(AutoCommands.shootThenFollow(ctx, 10.0, thirdFollow));
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 5.0, thirdFollow));
 
                             routine.observe(thirdFollow.done())
-                                    .onTrue(AutoCommands.shootThenFollow(ctx, 10.0, secondFollow));
+                                    .onTrue(
+                                            AutoCommands.fullSend(
+                                                    ctx,
+                                                    shouldMirror
+                                                            ? yOffset
+                                                            : FieldConstants.FIELD_WIDTH
+                                                                    - yOffset));
 
                             return routine;
                         }));
