@@ -37,7 +37,7 @@ import frc.lib.util.CommandXboxControllerExtended;
 import frc.lib.util.FieldUtil;
 import frc.lib.util.LoggedDashboardChooser;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.DriveToPose;
+import frc.robot.commands.FullSendToPose;
 import frc.robot.commands.autos.*;
 import frc.robot.commands.autos.tuning.FeedforwardCharacterizationAuto;
 import frc.robot.commands.autos.tuning.WheelCharacterizationAuto;
@@ -399,7 +399,7 @@ public class RobotContainer {
         // Drivetrain Commands
         SmartDashboard.putData(
                 "Drive to Start Pose",
-                new DriveToPose(drive, () -> startPose)
+                new FullSendToPose(drive, () -> startPose)
                         .withDistanceTolerance(Meters.of(0.04))
                         .withAngularTolerance(Degrees.of(3)));
     }

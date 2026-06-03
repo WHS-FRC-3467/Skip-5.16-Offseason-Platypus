@@ -29,7 +29,7 @@ import frc.lib.util.FieldUtil;
 import frc.robot.RobotState;
 import frc.robot.RobotState.FieldRegion;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.DriveToPose;
+import frc.robot.commands.FullSendToPose;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.indexer.IndexerSuperstructure;
@@ -327,10 +327,14 @@ public class AutoCommands {
         return ctx.intake().retractIntake().asProxy().withTimeout(0.5);
     }
 
-    public static Command fullSend(AutoContext ctx) {
-        var pose =
-                new Pose2d(8.264, 7.530, RobotState.getInstance().getOdometryPose().getRotation());
+    public static Command fullSend(AutoContext ctx, double y) {
+        return Commands.defer(
+                () -> {
+                    var pose =
+                            new Pose2d(8.264, y, ctx.robotState().getEstimatedPose().getRotation());
 
-        return new DriveToPose(ctx.drive(), () -> pose);
+                    return new FullSendToPose(ctx.drive(), () -> pose);
+                },
+                Set.of(ctx.drive()));
     }
 }
