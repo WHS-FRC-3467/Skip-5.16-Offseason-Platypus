@@ -24,30 +24,30 @@ public record ChoreoTraj(
     public static final ChoreoTraj C16782 = new ChoreoTraj(
         "C16782",
         OptionalInt.empty(),
-        6.3467,
-        new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368)),
-        new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
+        5.80717,
+        new Pose2d(3.20293, 6.9773, Rotation2d.fromRadians(-1.11537)),
+        new Pose2d(3.20293, 6.9773, Rotation2d.fromRadians(-1.11537))
     );
     public static final ChoreoTraj C16783 = new ChoreoTraj(
         "C16783",
         OptionalInt.empty(),
-        0.73605,
+        0.73572,
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368)),
-        new Pose2d(4.4111, 7.41935, Rotation2d.fromRadians(-1.5708))
+        new Pose2d(4.4111, 7.41935, Rotation2d.fromRadians(-1.55386))
     );
     public static final ChoreoTraj C1678Safe1 = new ChoreoTraj(
         "C1678Safe1",
         OptionalInt.empty(),
-        6.04795,
+        5.12102,
         new Pose2d(4.45, 7.39928, Rotation2d.fromRadians(-1.5708)),
-        new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
+        new Pose2d(3.20293, 6.9773, Rotation2d.fromRadians(-1.11537))
     );
     public static final ChoreoTraj C16781 = new ChoreoTraj(
         "C16781",
         OptionalInt.empty(),
-        6.45343,
+        5.66742,
         new Pose2d(4.45, 7.39928, Rotation2d.fromRadians(-1.5708)),
-        new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
+        new Pose2d(3.20293, 6.9773, Rotation2d.fromRadians(-1.11537))
     );
 
     /**
