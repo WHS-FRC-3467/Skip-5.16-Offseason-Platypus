@@ -15,6 +15,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.lib.util.AlwaysTunableNumber;
 import frc.lib.util.FieldUtil;
+import frc.robot.FieldConstants;
 import frc.robot.RobotState;
 import frc.robot.RobotState.FieldRegion;
 import frc.robot.commands.DriveCommands;
@@ -81,7 +84,6 @@ public class AutoCommands {
                                                 shooter.readyToShoot.and(
                                                         RobotState.getInstance().facingTarget))
                                         .repeatedly())
-                        .until(shooter.hopperEmpty)
                         .withTimeout(timeoutDuration)
                         .finallyDo(
                                 () -> {
@@ -330,10 +332,22 @@ public class AutoCommands {
     public static Command fullSend(AutoContext ctx, double y) {
         return Commands.defer(
                 () -> {
-                    var pose =
-                            new Pose2d(8.264, y, ctx.robotState().getEstimatedPose().getRotation());
+                    var translation = new Translation2d(8.264, FieldConstants.FIELD_WIDTH - 7.530);
 
-                    return new FullSendToPose(ctx.drive(), () -> pose);
+                    return new FullSendToPose(
+                            ctx.drive(),
+                            () ->
+                                    new Pose2d(
+                                            translation,
+                                            new Pose2d(
+                                                            FieldConstants.Hub.TOP_CENTER_POINT
+                                                                    .toTranslation2d(),
+                                                            Rotation2d.kZero)
+                                                    .relativeTo(
+                                                            RobotState.getInstance()
+                                                                    .getEstimatedPose())
+                                                    .getTranslation()
+                                                    .getAngle()));
                 },
                 Set.of(ctx.drive()));
     }

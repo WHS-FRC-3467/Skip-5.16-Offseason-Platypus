@@ -22,6 +22,7 @@ import static edu.wpi.first.units.Units.Seconds;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -60,6 +61,8 @@ import frc.robot.util.HubState;
 import frc.robot.util.RobotSim;
 
 import org.littletonrobotics.junction.Logger;
+
+import java.util.Set;
 
 /**
  * Container class for the robot that holds all subsystems, controllers, and command bindings. This
@@ -347,6 +350,31 @@ public class RobotContainer {
      * the dashboard for manual testing and debugging.
      */
     private void initializeDashboard() {
+
+        SmartDashboard.putData(
+                "TestFullSend",
+                Commands.defer(
+                        () -> {
+                            var translation =
+                                    new Translation2d(8.264, FieldConstants.FIELD_WIDTH - 7.530);
+
+                            return new FullSendToPose(
+                                    drive,
+                                    () ->
+                                            new Pose2d(
+                                                    translation,
+                                                    new Pose2d(
+                                                                    FieldConstants.Hub
+                                                                            .TOP_CENTER_POINT
+                                                                            .toTranslation2d(),
+                                                                    Rotation2d.kZero)
+                                                            .relativeTo(
+                                                                    RobotState.getInstance()
+                                                                            .getEstimatedPose())
+                                                            .getTranslation()
+                                                            .getAngle()));
+                        },
+                        Set.of(drive)));
 
         // Indexer Commands
         SmartDashboard.putData(IndexerSuperstructureConstants.NAME + "/Shoot", indexer.shoot());
