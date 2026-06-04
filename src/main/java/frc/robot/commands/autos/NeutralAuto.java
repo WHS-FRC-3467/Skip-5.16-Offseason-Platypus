@@ -45,12 +45,12 @@ public final class NeutralAuto {
         List<String> names =
                 isSafe
                         ? List.of(
-                                ChoreoTraj.Neutral1.name(),
+                                ChoreoTraj.NeutralSafe1.name(),
                                 ChoreoTraj.Neutral2.name(),
                                 ChoreoTraj.Handoff.name())
                         : List.of(
-                                ChoreoTraj.NeutralSafe1.name(),
-                                ChoreoTraj.NeutralSafe2.name(),
+                                ChoreoTraj.Neutral1.name(),
+                                ChoreoTraj.Neutral2.name(),
                                 ChoreoTraj.Handoff.name());
         List<Trajectory<SwerveSample>> trajectories =
                 AutoUtil.loadTrajectories(names, shouldMirror).orElse(null);
