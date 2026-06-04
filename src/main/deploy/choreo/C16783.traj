@@ -82,5 +82,6 @@
     {"t":0.72358, "x":4.4111, "y":7.41935, "heading":-1.55382, "vx":3.35331, "vy":0.71517, "omega":-1.13791, "ax":0.0, "ay":0.0, "alpha":0.0, "fx":[0.0,0.0,0.0,0.0], "fy":[0.0,0.0,0.0,0.0]}],
   "splits":[0]
  },
- "events":[]
+ "events":[
+   {"name":"RetractIntake", "from":{"target":0, "targetTimestamp":0.0, "offset":{"exp":"0 s", "val":0.0}}, "event":null}]
 }
