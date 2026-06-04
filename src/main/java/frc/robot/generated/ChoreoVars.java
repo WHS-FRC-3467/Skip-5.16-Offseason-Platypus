@@ -15,6 +15,7 @@ public final class ChoreoVars {
 
     public static final class Poses {
         public static final Pose2d NeutralShoot = new Pose2d(3.12514, 7.3089199, Rotation2d.fromRadians(-1.1536837));
+        public static final Pose2d NewShoot = new Pose2d(3.2029288, 6.9772964, Rotation2d.fromRadians(-1.1153708));
         public static final Pose2d NewStart = new Pose2d(4.45, 7.3992772, Rotation2d.fromRadians(4.712389));
         public static final Pose2d TunnelEntrance = new Pose2d(4, 7.3992772, Rotation2d.fromRadians(-1.5707963));
         public static final Pose2d TunnelExit = new Pose2d(5.65, 7.3992772, Rotation2d.fromRadians(-1.5707963));
