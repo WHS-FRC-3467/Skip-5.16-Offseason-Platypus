@@ -144,16 +144,16 @@ public class RobotContainer {
                         cachedAutoCommand = null;
                         return;
                     }
+                    cachedAutoCommand = auto.command();
                     var pathPoses =
                             auto.previewPoses().stream()
                                     .map(FieldUtil::apply)
                                     .toArray(Pose2d[]::new);
-                    if (pathPoses.length == 0) return;
-                    pathPoses[0] = FieldUtil.apply(auto.startingPose());
+                    if (pathPoses.length > 0) {
+                        pathPoses[0] = FieldUtil.apply(auto.startingPose());
+                    }
 
                     autoPreviewField.getObject("path").setPoses(pathPoses);
-
-                    cachedAutoCommand = auto.command();
                 });
 
         autoChooser.addOption(
