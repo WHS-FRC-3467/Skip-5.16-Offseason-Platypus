@@ -332,22 +332,24 @@ public class AutoCommands {
     public static Command fullSend(AutoContext ctx, double y) {
         return Commands.defer(
                 () -> {
-                    var translation = new Translation2d(8.264, FieldConstants.FIELD_WIDTH - 7.530);
+                    var translation = new Translation2d(8.264, y);
 
                     return new FullSendToPose(
                             ctx.drive(),
                             () ->
                                     new Pose2d(
                                             translation,
-                                            new Pose2d(
-                                                            FieldConstants.Hub.TOP_CENTER_POINT
-                                                                    .toTranslation2d(),
-                                                            Rotation2d.kZero)
+                                            RobotState.getInstance()
+                                                    .getEstimatedPose()
                                                     .relativeTo(
-                                                            RobotState.getInstance()
-                                                                    .getEstimatedPose())
+                                                            new Pose2d(
+                                                                    FieldConstants.Hub
+                                                                            .TOP_CENTER_POINT
+                                                                            .toTranslation2d(),
+                                                                    Rotation2d.kZero))
                                                     .getTranslation()
-                                                    .getAngle()));
+                                                    .getAngle()
+                                                    .unaryMinus()));
                 },
                 Set.of(ctx.drive()));
     }
