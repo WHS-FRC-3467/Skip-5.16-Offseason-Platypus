@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+
 import frc.lib.util.FieldUtil;
 import frc.robot.FieldConstants;
 import frc.robot.commands.ResilientTrajectoryFollower;
@@ -104,12 +105,12 @@ public final class NeutralAuto {
                             routine.observe(secondFollow.done())
                                     .onTrue(AutoCommands.shootThenFollow(ctx, 3.0, thirdFollow));
 
-                            double sendY = (!FieldUtil.shouldFlip() ^ shouldMirror) ? yOffset : FieldConstants.FIELD_WIDTH - yOffset;
+                            double sendY =
+                                    (!FieldUtil.shouldFlip() ^ shouldMirror)
+                                            ? yOffset
+                                            : FieldConstants.FIELD_WIDTH - yOffset;
                             routine.observe(thirdFollow.done())
-                                    .onTrue(
-                                            AutoCommands.fullSend(
-                                                    ctx,
-                                                    sendY));
+                                    .onTrue(AutoCommands.fullSend(ctx, sendY));
 
                             return routine;
                         }));
