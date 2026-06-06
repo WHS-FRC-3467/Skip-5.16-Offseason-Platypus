@@ -33,8 +33,6 @@ import frc.lib.util.LoggedTunableBoolean;
 import frc.lib.util.LoggedTunableNumber;
 import frc.lib.util.LoggerHelper;
 
-import java.util.Set;
-
 /**
  * Subsystem that controls the indexer floor and indexer centering mechanism for moving game pieces
  * within the robot. The indexer can pull game pieces in, expel them, or stop. Uses a flywheel
@@ -200,24 +198,12 @@ public class IndexerSuperstructure extends SubsystemBase {
      * @return a command that runs the indexer at shooting speed
      */
     public Command shoot() {
-        return Commands.repeatingSequence(
-                        this.runOnce(
-                                () ->
-                                        runVelocity(
-                                                RotationsPerSecond.of(FLOOR_SHOOT_RPS.get()),
-                                                RotationsPerSecond.of(CENTER_SHOOT_RPS.get()))),
-                        Commands.waitUntil(isJammed),
-                        this.runOnce(
-                                () ->
-                                        floorIO.runCurrent(
-                                                Amps.of(
-                                                        Math.copySign(
-                                                                jamDetectionTorqueCurrentResponse
-                                                                        .get(),
-                                                                -FLOOR_SHOOT_RPS.get())))),
-                        Commands.defer(
-                                () -> Commands.waitSeconds(jamDetectionResponseLengthSeconds.get()),
-                                Set.of()))
+        return this.runOnce(
+                        () ->
+                                runVelocity(
+                                        RotationsPerSecond.of(FLOOR_SHOOT_RPS.get()),
+                                        RotationsPerSecond.of(CENTER_SHOOT_RPS.get())))
+                .andThen(this.idle())
                 .finallyDo(this::stop)
                 .withName("Shoot");
     }
