@@ -342,19 +342,33 @@ public class AutoCommands {
                     return new FullSendToPose(
                             ctx.drive(),
                             () ->
-                                    new Pose2d(
-                                            translation,
-                                            RobotState.getInstance()
-                                                    .getEstimatedPose()
-                                                    .relativeTo(
-                                                            new Pose2d(
-                                                                    FieldConstants.Hub
-                                                                            .TOP_CENTER_POINT
-                                                                            .toTranslation2d(),
-                                                                    Rotation2d.kZero))
-                                                    .getTranslation()
-                                                    .getAngle()
-                                                    .unaryMinus()));
+                                    FieldUtil.shouldFlip()
+                                            ? new Pose2d(
+                                                    translation,
+                                                    RobotState.getInstance()
+                                                            .getEstimatedPose()
+                                                            .relativeTo(
+                                                                    new Pose2d(
+                                                                            FieldConstants.Hub
+                                                                                    .TOP_CENTER_POINT
+                                                                                    .toTranslation2d(),
+                                                                            Rotation2d.kZero))
+                                                            .getTranslation()
+                                                            .getAngle()
+                                                            .unaryMinus())
+                                            : new Pose2d(
+                                                    translation,
+                                                    RobotState.getInstance()
+                                                            .getEstimatedPose()
+                                                            .relativeTo(
+                                                                    new Pose2d(
+                                                                            FieldConstants.Hub
+                                                                                    .TOP_CENTER_POINT
+                                                                                    .toTranslation2d(),
+                                                                            Rotation2d.kZero))
+                                                            .getTranslation()
+                                                            .getAngle()
+                                                            .plus(Rotation2d.k180deg)));
                 },
                 Set.of(ctx.drive()));
     }
