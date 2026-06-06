@@ -18,7 +18,7 @@ public final class ChoreoVars {
         public static final Pose2d NewShoot = new Pose2d(3.1915681, 7.1599646, Rotation2d.fromRadians(-1.142009));
         public static final Pose2d NewStart = new Pose2d(4.45, 7.3992772, Rotation2d.fromRadians(4.712389));
         public static final Pose2d TunnelEntrance = new Pose2d(4, 7.3992772, Rotation2d.fromRadians(-1.5707963));
-        public static final Pose2d TunnelExit = new Pose2d(5.65, 7.3992772, Rotation2d.fromRadians(-1.5707963));
+        public static final Pose2d TunnelExit = new Pose2d(5.85, 7.3992772, Rotation2d.fromRadians(-1.5707963));
     }
 }
 // spotless:on
