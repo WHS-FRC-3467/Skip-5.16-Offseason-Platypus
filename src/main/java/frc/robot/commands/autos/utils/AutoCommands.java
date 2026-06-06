@@ -81,8 +81,7 @@ public class AutoCommands {
                                                 indexer.shoot(),
                                                 tower.shoot(),
                                                 intake.shuffleStep().repeatedly().asProxy())
-                                        .onlyWhile(
-                                                shooter.readyToShoot)
+                                        .onlyWhile(shooter.readyToShoot)
                                         .repeatedly())
                         .withTimeout(timeoutDuration)
                         .finallyDo(
