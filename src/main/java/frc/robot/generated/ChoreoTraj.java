@@ -31,21 +31,21 @@ public record ChoreoTraj(
     public static final ChoreoTraj Neutral1 = new ChoreoTraj(
         "Neutral1",
         OptionalInt.empty(),
-        5.39482,
+        5.42668,
         new Pose2d(4.45, 7.39928, Rotation2d.fromRadians(-1.5708)),
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
     );
     public static final ChoreoTraj Neutral2 = new ChoreoTraj(
         "Neutral2",
         OptionalInt.empty(),
-        5.98356,
+        6.01714,
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368)),
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
     );
     public static final ChoreoTraj NeutralSafe1 = new ChoreoTraj(
         "NeutralSafe1",
         OptionalInt.empty(),
-        5.46719,
+        5.49907,
         new Pose2d(4.45, 7.39928, Rotation2d.fromRadians(-1.5708)),
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
     );
