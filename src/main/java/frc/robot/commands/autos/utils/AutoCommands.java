@@ -82,8 +82,7 @@ public class AutoCommands {
                                                 tower.shoot(),
                                                 intake.shuffleStep().repeatedly().asProxy())
                                         .onlyWhile(
-                                                shooter.readyToShoot.and(
-                                                        RobotState.getInstance().facingTarget))
+                                                shooter.readyToShoot)
                                         .repeatedly())
                         .withTimeout(timeoutDuration)
                         .finallyDo(
