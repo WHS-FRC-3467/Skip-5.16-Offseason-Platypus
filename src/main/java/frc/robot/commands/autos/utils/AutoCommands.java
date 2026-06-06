@@ -33,6 +33,7 @@ import frc.robot.RobotState;
 import frc.robot.RobotState.FieldRegion;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FullSendToPose;
+import frc.robot.commands.autos.NeutralAuto;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.indexer.IndexerSuperstructure;
@@ -329,10 +330,14 @@ public class AutoCommands {
         return ctx.intake().retractIntake().asProxy().withTimeout(0.5);
     }
 
-    public static Command fullSend(AutoContext ctx, double y) {
+    public static Command fullSend(AutoContext ctx, boolean shouldMirror) {
         return Commands.defer(
                 () -> {
-                    var translation = new Translation2d(8.264, y);
+                    double sendY =
+                            (!FieldUtil.shouldFlip() ^ shouldMirror)
+                                    ? NeutralAuto.Y_OFFSET
+                                    : FieldConstants.FIELD_WIDTH - NeutralAuto.Y_OFFSET;
+                    var translation = new Translation2d(8.264, sendY);
 
                     return new FullSendToPose(
                             ctx.drive(),
