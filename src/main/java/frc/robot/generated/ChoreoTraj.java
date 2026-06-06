@@ -38,7 +38,7 @@ public record ChoreoTraj(
     public static final ChoreoTraj Neutral2 = new ChoreoTraj(
         "Neutral2",
         OptionalInt.empty(),
-        5.73358,
+        5.91726,
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368)),
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
     );
