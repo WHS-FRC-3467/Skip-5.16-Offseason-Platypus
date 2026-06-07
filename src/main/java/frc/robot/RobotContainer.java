@@ -248,8 +248,7 @@ public class RobotContainer {
                                                 .withTimeout(0.2),
                                         Commands.parallel(indexer.shoot(), tower.shoot())
                                                 .onlyWhile(
-                                                        shooter.readyToShoot.and(
-                                                                robotState.facingFeedTarget))
+                                                        shooter.readyToShoot)
                                                 .repeatedly())))
                 .onFalse(
                         Commands.parallel(
@@ -273,9 +272,7 @@ public class RobotContainer {
                                                         .withTimeout(0.2),
                                                 Commands.parallel(indexer.shoot(), tower.shoot())
                                                         .onlyWhile(
-                                                                shooter.readyToShoot.and(
-                                                                        robotState
-                                                                                .facingFeedTarget))
+                                                                shooter.readyToShoot)
                                                         .repeatedly()))))
                 .onFalse(
                         Commands.parallel(
@@ -298,8 +295,7 @@ public class RobotContainer {
                                                 .withTimeout(0.2),
                                         Commands.parallel(indexer.shoot(), tower.shoot())
                                                 .onlyWhile(
-                                                        shooter.readyToShoot.and(
-                                                                robotState.facingFeedTarget))
+                                                        shooter.readyToShoot)
                                                 .repeatedly())))
                 .onFalse(
                         Commands.parallel(
