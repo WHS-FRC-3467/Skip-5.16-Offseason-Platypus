@@ -194,11 +194,14 @@ public class RobotContainer {
                                         DriveCommands.staticAimTowardsTarget(drive),
                                         robotState.shouldFeed),
                                 shooter.spinUpShooter(),
+                                Commands.sequence(
+                                    Commands.parallel(indexer.eject(), tower.eject()),
+                                    Commands.waitSeconds(0.2),
                                 Commands.parallel(indexer.shoot(), tower.shoot())
                                         .onlyWhile(
                                                 shooter.readyToShoot.and(
                                                         robotState.facingFeedTarget))
-                                        .repeatedly()))
+                                        .repeatedly())))
                 .onFalse(
                         Commands.parallel(
                                 shooter.stopAndStow(),
