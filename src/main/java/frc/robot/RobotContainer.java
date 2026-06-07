@@ -245,10 +245,8 @@ public class RobotContainer {
                                         FieldConstants.Hub.HUB_SHOT_DISTANCE),
                                 Commands.sequence(
                                         Commands.parallel(indexer.eject(), tower.eject())
-                                                .withTimeout(0.2),
+                                                .withTimeout(0.8),
                                         Commands.parallel(indexer.shoot(), tower.shoot())
-                                                .onlyWhile(
-                                                        shooter.readyToShoot)
                                                 .repeatedly())))
                 .onFalse(
                         Commands.parallel(
@@ -269,10 +267,8 @@ public class RobotContainer {
                                                 .withTimeout(0.75),
                                         Commands.sequence(
                                                 Commands.parallel(indexer.eject(), tower.eject())
-                                                        .withTimeout(0.2),
+                                                        .withTimeout(0.8),
                                                 Commands.parallel(indexer.shoot(), tower.shoot())
-                                                        .onlyWhile(
-                                                                shooter.readyToShoot)
                                                         .repeatedly()))))
                 .onFalse(
                         Commands.parallel(
@@ -292,10 +288,8 @@ public class RobotContainer {
                                         FieldConstants.Tower.TOWER_SHOT_DISTANCE),
                                 Commands.sequence(
                                         Commands.parallel(indexer.eject(), tower.eject())
-                                                .withTimeout(0.2),
+                                                .withTimeout(0.8),
                                         Commands.parallel(indexer.shoot(), tower.shoot())
-                                                .onlyWhile(
-                                                        shooter.readyToShoot)
                                                 .repeatedly())))
                 .onFalse(
                         Commands.parallel(
