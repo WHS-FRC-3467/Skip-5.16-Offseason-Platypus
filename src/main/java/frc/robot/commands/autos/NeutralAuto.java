@@ -98,13 +98,10 @@ public final class NeutralAuto {
                                                     firstFollow));
 
                             routine.observe(firstFollow.done())
-                                    .onTrue(AutoCommands.shootThenFollow(ctx, 2.75, secondFollow));
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 4.0, secondFollow));
 
                             routine.observe(secondFollow.done())
-                                    .onTrue(AutoCommands.shootThenFollow(ctx, 2.5, thirdFollow));
-
-                            routine.observe(thirdFollow.done())
-                                    .onTrue(AutoCommands.fullSend(ctx, shouldMirror));
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 6.0, thirdFollow));
 
                             return routine;
                         }));
