@@ -195,7 +195,8 @@ public class RobotContainer {
                                         robotState.shouldFeed),
                                 shooter.spinUpShooter(),
                                 Commands.sequence(
-                                        Commands.parallel(indexer.eject(), tower.eject()).withTimeout(0.2),
+                                        Commands.parallel(indexer.eject(), tower.eject())
+                                                .withTimeout(0.2),
                                         Commands.parallel(indexer.shoot(), tower.shoot())
                                                 .onlyWhile(
                                                         shooter.readyToShoot.and(
@@ -243,7 +244,8 @@ public class RobotContainer {
                                 shooter.spinUpShooterToFixedDistance(
                                         FieldConstants.Hub.HUB_SHOT_DISTANCE),
                                 Commands.sequence(
-                                        Commands.parallel(indexer.eject(), tower.eject()).withTimeout(0.2),
+                                        Commands.parallel(indexer.eject(), tower.eject())
+                                                .withTimeout(0.2),
                                         Commands.parallel(indexer.shoot(), tower.shoot())
                                                 .onlyWhile(
                                                         shooter.readyToShoot.and(
@@ -267,7 +269,8 @@ public class RobotContainer {
                                         Commands.waitUntil(shooter.atMidlineFeedSetpoints)
                                                 .withTimeout(0.75),
                                         Commands.sequence(
-                                                Commands.parallel(indexer.eject(), tower.eject()).withTimeout(0.2),
+                                                Commands.parallel(indexer.eject(), tower.eject())
+                                                        .withTimeout(0.2),
                                                 Commands.parallel(indexer.shoot(), tower.shoot())
                                                         .onlyWhile(
                                                                 shooter.readyToShoot.and(
@@ -291,7 +294,8 @@ public class RobotContainer {
                                 shooter.spinUpShooterToFixedDistance(
                                         FieldConstants.Tower.TOWER_SHOT_DISTANCE),
                                 Commands.sequence(
-                                        Commands.parallel(indexer.eject(), tower.eject()).withTimeout(0.2),
+                                        Commands.parallel(indexer.eject(), tower.eject())
+                                                .withTimeout(0.2),
                                         Commands.parallel(indexer.shoot(), tower.shoot())
                                                 .onlyWhile(
                                                         shooter.readyToShoot.and(
