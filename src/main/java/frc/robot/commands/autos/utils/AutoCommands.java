@@ -78,8 +78,7 @@ public class AutoCommands {
                 Commands.parallel(
                                 shooter.spinUpShooter().asProxy(),
                                 Commands.sequence(
-                                        Commands.parallel(indexer.eject(), tower.eject()),
-                                        Commands.waitSeconds(0.2),
+                                        Commands.parallel(indexer.eject(), tower.eject()).withTimeout(0.2),
                                         Commands.parallel(indexer.shoot(), tower.shoot())
                                                 .onlyWhile(
                                                         shooter.readyToShoot.and(
