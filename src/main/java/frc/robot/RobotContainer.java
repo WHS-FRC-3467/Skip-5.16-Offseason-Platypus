@@ -195,13 +195,13 @@ public class RobotContainer {
                                         robotState.shouldFeed),
                                 shooter.spinUpShooter(),
                                 Commands.sequence(
-                                    Commands.parallel(indexer.eject(), tower.eject()),
-                                    Commands.waitSeconds(0.2),
-                                Commands.parallel(indexer.shoot(), tower.shoot())
-                                        .onlyWhile(
-                                                shooter.readyToShoot.and(
-                                                        robotState.facingFeedTarget))
-                                        .repeatedly())))
+                                        Commands.parallel(indexer.eject(), tower.eject()),
+                                        Commands.waitSeconds(0.2),
+                                        Commands.parallel(indexer.shoot(), tower.shoot())
+                                                .onlyWhile(
+                                                        shooter.readyToShoot.and(
+                                                                robotState.facingFeedTarget))
+                                                .repeatedly())))
                 .onFalse(
                         Commands.parallel(
                                 shooter.stopAndStow(),
@@ -243,7 +243,14 @@ public class RobotContainer {
                                 DriveCommands.stopWithX(drive),
                                 shooter.spinUpShooterToFixedDistance(
                                         FieldConstants.Hub.HUB_SHOT_DISTANCE),
-                                Commands.parallel(indexer.shoot(), tower.shoot())))
+                                Commands.sequence(
+                                        Commands.parallel(indexer.eject(), tower.eject()),
+                                        Commands.waitSeconds(0.2),
+                                        Commands.parallel(indexer.shoot(), tower.shoot())
+                                                .onlyWhile(
+                                                        shooter.readyToShoot.and(
+                                                                robotState.facingFeedTarget))
+                                                .repeatedly())))
                 .onFalse(
                         Commands.parallel(
                                 shooter.stopAndStow(),
@@ -261,7 +268,14 @@ public class RobotContainer {
                                 Commands.sequence(
                                         Commands.waitUntil(shooter.atMidlineFeedSetpoints)
                                                 .withTimeout(0.75),
-                                        Commands.parallel(indexer.shoot(), tower.shoot()))))
+                                        Commands.sequence(
+                                        Commands.parallel(indexer.eject(), tower.eject()),
+                                        Commands.waitSeconds(0.2),
+                                        Commands.parallel(indexer.shoot(), tower.shoot())
+                                                .onlyWhile(
+                                                        shooter.readyToShoot.and(
+                                                                robotState.facingFeedTarget))
+                                                .repeatedly()))))
                 .onFalse(
                         Commands.parallel(
                                 shooter.stopAndStow(),
@@ -278,7 +292,14 @@ public class RobotContainer {
                                 DriveCommands.stopWithX(drive),
                                 shooter.spinUpShooterToFixedDistance(
                                         FieldConstants.Tower.TOWER_SHOT_DISTANCE),
-                                Commands.parallel(indexer.shoot(), tower.shoot())))
+                                Commands.sequence(
+                                        Commands.parallel(indexer.eject(), tower.eject()),
+                                        Commands.waitSeconds(0.2),
+                                        Commands.parallel(indexer.shoot(), tower.shoot())
+                                                .onlyWhile(
+                                                        shooter.readyToShoot.and(
+                                                                robotState.facingFeedTarget))
+                                                .repeatedly())))
                 .onFalse(
                         Commands.parallel(
                                 shooter.stopAndStow(),

@@ -77,12 +77,14 @@ public class AutoCommands {
         return Commands.deadline(
                 Commands.parallel(
                                 shooter.spinUpShooter().asProxy(),
-                                Commands.parallel(
-                                                indexer.shoot(),
-                                                tower.shoot(),
-                                                intake.shuffleStep().repeatedly().asProxy())
-                                        .onlyWhile(shooter.readyToShoot)
-                                        .repeatedly())
+                                Commands.sequence(
+                                        Commands.parallel(indexer.eject(), tower.eject()),
+                                        Commands.waitSeconds(0.2),
+                                        Commands.parallel(indexer.shoot(), tower.shoot())
+                                                .onlyWhile(
+                                                        shooter.readyToShoot.and(
+                                                                robotState.facingFeedTarget))
+                                                .repeatedly()))
                         .withTimeout(timeoutDuration)
                         .finallyDo(
                                 () -> {
