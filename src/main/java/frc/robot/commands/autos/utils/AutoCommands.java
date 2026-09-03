@@ -15,8 +15,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -28,11 +26,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.lib.util.AlwaysTunableNumber;
 import frc.lib.util.FieldUtil;
-import frc.robot.FieldConstants;
 import frc.robot.RobotState;
 import frc.robot.RobotState.FieldRegion;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.FullSendToPose;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.indexer.IndexerSuperstructure;
@@ -327,30 +323,5 @@ public class AutoCommands {
 
     public static Command retractIntake(AutoContext ctx) {
         return ctx.intake().retractIntake().asProxy().withTimeout(0.5);
-    }
-
-    public static Command fullSend(AutoContext ctx, double y) {
-        return Commands.defer(
-                () -> {
-                    var translation = new Translation2d(8.264, y);
-
-                    return new FullSendToPose(
-                            ctx.drive(),
-                            () ->
-                                    new Pose2d(
-                                            translation,
-                                            RobotState.getInstance()
-                                                    .getEstimatedPose()
-                                                    .relativeTo(
-                                                            new Pose2d(
-                                                                    FieldConstants.Hub
-                                                                            .TOP_CENTER_POINT
-                                                                            .toTranslation2d(),
-                                                                    Rotation2d.kZero))
-                                                    .getTranslation()
-                                                    .getAngle()
-                                                    .unaryMinus()));
-                },
-                Set.of(ctx.drive()));
     }
 }

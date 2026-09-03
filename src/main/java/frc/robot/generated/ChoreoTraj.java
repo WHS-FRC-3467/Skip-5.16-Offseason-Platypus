@@ -21,25 +21,18 @@ public record ChoreoTraj(
     Pose2d initialPoseBlue,
     Pose2d endPoseBlue
 ) {
-    public static final ChoreoTraj Handoff = new ChoreoTraj(
-        "Handoff",
+    public static final ChoreoTraj Neutral2 = new ChoreoTraj(
+        "Neutral2",
         OptionalInt.empty(),
-        0.72358,
-        new Pose2d(3.19157, 7.15996, Rotation2d.fromRadians(-1.14201)),
-        new Pose2d(4.4111, 7.41935, Rotation2d.fromRadians(-1.55382))
+        5.73358,
+        new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368)),
+        new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
     );
     public static final ChoreoTraj Neutral1 = new ChoreoTraj(
         "Neutral1",
         OptionalInt.empty(),
         5.33159,
         new Pose2d(4.45, 7.39928, Rotation2d.fromRadians(-1.5708)),
-        new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
-    );
-    public static final ChoreoTraj Neutral2 = new ChoreoTraj(
-        "Neutral2",
-        OptionalInt.empty(),
-        5.73358,
-        new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368)),
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
     );
     public static final ChoreoTraj NeutralSafe1 = new ChoreoTraj(
@@ -55,9 +48,8 @@ public record ChoreoTraj(
      * This allows for trajectory data to be looked up with strings during runtime.
      */
     public static final Map<String, ChoreoTraj> ALL_TRAJECTORIES = Map.ofEntries(
-        Map.entry("Handoff", Handoff),
-        Map.entry("Neutral1", Neutral1),
         Map.entry("Neutral2", Neutral2),
+        Map.entry("Neutral1", Neutral1),
         Map.entry("NeutralSafe1", NeutralSafe1)
     );
 

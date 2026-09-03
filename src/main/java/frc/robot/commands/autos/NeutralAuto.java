@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
-import frc.robot.FieldConstants;
 import frc.robot.commands.ResilientTrajectoryFollower;
 import frc.robot.commands.autos.utils.AutoCommands;
 import frc.robot.commands.autos.utils.AutoContext;
@@ -44,14 +43,8 @@ public final class NeutralAuto {
             AutoContext ctx, boolean shouldMirror, boolean isSafe) {
         List<String> names =
                 isSafe
-                        ? List.of(
-                                ChoreoTraj.NeutralSafe1.name(),
-                                ChoreoTraj.Neutral2.name(),
-                                ChoreoTraj.Handoff.name())
-                        : List.of(
-                                ChoreoTraj.Neutral1.name(),
-                                ChoreoTraj.Neutral2.name(),
-                                ChoreoTraj.Handoff.name());
+                        ? List.of(ChoreoTraj.NeutralSafe1.name(), ChoreoTraj.Neutral2.name())
+                        : List.of(ChoreoTraj.Neutral1.name(), ChoreoTraj.Neutral2.name());
         List<Trajectory<SwerveSample>> trajectories =
                 AutoUtil.loadTrajectories(names, shouldMirror).orElse(null);
         if (trajectories == null) {
@@ -79,10 +72,7 @@ public final class NeutralAuto {
                                     ctx.drive()
                                             .followTrajectoryResilient(
                                                     trajectories.get(1), eventBindings);
-                            ResilientTrajectoryFollower thirdFollow =
-                                    ctx.drive()
-                                            .followTrajectoryResilient(
-                                                    trajectories.get(2), eventBindings);
+
                             routine.active()
                                     .onTrue(
                                             Commands.sequence(
@@ -102,16 +92,7 @@ public final class NeutralAuto {
                                     .onTrue(AutoCommands.shootThenFollow(ctx, 3.0, secondFollow));
 
                             routine.observe(secondFollow.done())
-                                    .onTrue(AutoCommands.shootThenFollow(ctx, 3.0, thirdFollow));
-
-                            routine.observe(thirdFollow.done())
-                                    .onTrue(
-                                            AutoCommands.fullSend(
-                                                    ctx,
-                                                    shouldMirror
-                                                            ? yOffset
-                                                            : FieldConstants.FIELD_WIDTH
-                                                                    - yOffset));
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 3.0, secondFollow));
 
                             return routine;
                         }));
