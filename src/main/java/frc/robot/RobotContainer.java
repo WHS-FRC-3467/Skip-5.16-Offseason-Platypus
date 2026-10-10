@@ -172,8 +172,8 @@ public class RobotContainer {
         drive.setDefaultCommand(
                 DriveCommands.joystickDrive(
                         drive,
-                        () -> -controller.getLeftY(),
-                        () -> -controller.getLeftX(),
+                        () -> -controller.getLeftY() * 0.8,
+                        () -> -controller.getLeftX() * 0.8,
                         () -> -controller.getRightX()));
 
         // Right Trigger: Shoot/Pass
