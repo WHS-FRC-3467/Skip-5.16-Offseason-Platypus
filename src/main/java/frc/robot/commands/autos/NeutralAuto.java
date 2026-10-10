@@ -31,20 +31,14 @@ public final class NeutralAuto {
     private static final Alert TRAJECTORIES_MISSING =
             new Alert("Neutral Auto Trajectories Missing, Auto(s) Unavailable", AlertType.kError);
 
-    private static final double yOffset = 7.530;
-
     /**
      * Builds the selected neutral auto variant.
      *
      * @param shouldMirror Whether to mirror the route for the opposite starting side
-     * @param isSafe Whether to use the safer first segment instead of the aggressive one
      */
-    public static Optional<AutoOption> create(
-            AutoContext ctx, boolean shouldMirror, boolean isSafe) {
+    public static Optional<AutoOption> create(AutoContext ctx, boolean shouldMirror) {
         List<String> names =
-                isSafe
-                        ? List.of(ChoreoTraj.NeutralSafe1.name(), ChoreoTraj.Neutral2.name())
-                        : List.of(ChoreoTraj.Neutral1.name(), ChoreoTraj.Neutral2.name());
+                List.of(ChoreoTraj.NeutralSafe1.name(), ChoreoTraj.NeutralSafe2.name());
         List<Trajectory<SwerveSample>> trajectories =
                 AutoUtil.loadTrajectories(names, shouldMirror).orElse(null);
         if (trajectories == null) {
@@ -59,8 +53,7 @@ public final class NeutralAuto {
                             AutoRoutine routine =
                                     ctx.autoFactory()
                                             .newRoutine(
-                                                    "Neutral"
-                                                            + (isSafe ? "Safe" : "Aggressive")
+                                                    "NeutralSafe"
                                                             + (shouldMirror ? "Right" : "Left"));
                             AutoTrajectory first = routine.trajectory(trajectories.get(0));
                             Map<String, Command> eventBindings = AutoUtil.createEventBindings(ctx);

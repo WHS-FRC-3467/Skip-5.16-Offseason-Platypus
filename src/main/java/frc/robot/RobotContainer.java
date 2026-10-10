@@ -127,15 +127,11 @@ public class RobotContainer {
         // Preload Autos
         autoChooser.addOption("PreloadAuto", PreloadAuto.create(ctx));
 
-        testCommand = NeutralAuto.create(ctx, false, true).orElseGet(() -> PreloadAuto.create(ctx));
+        testCommand = NeutralAuto.create(ctx, true).orElseGet(() -> PreloadAuto.create(ctx));
 
         // Neutral Autos
-        NeutralAuto.create(ctx, false, false)
-                .ifPresent(a -> autoChooser.addOption("Aggressive-Left", a));
-        NeutralAuto.create(ctx, true, false)
-                .ifPresent(a -> autoChooser.addOption("Aggressive-Right", a));
-        NeutralAuto.create(ctx, false, true).ifPresent(a -> autoChooser.addOption("Safe-Left", a));
-        NeutralAuto.create(ctx, true, true).ifPresent(a -> autoChooser.addOption("Safe-Right", a));
+        NeutralAuto.create(ctx, false).ifPresent(a -> autoChooser.addOption("Safe-Left", a));
+        NeutralAuto.create(ctx, true).ifPresent(a -> autoChooser.addOption("Safe-Right", a));
 
         autoChooser.onChange(
                 auto -> {
