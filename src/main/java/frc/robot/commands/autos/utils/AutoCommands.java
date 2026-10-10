@@ -80,6 +80,7 @@ public class AutoCommands {
                                                 shooter.readyToShoot.and(
                                                         RobotState.getInstance().facingTarget))
                                         .repeatedly())
+                        .until(shooter.hopperEmpty)
                         .withTimeout(timeoutDuration)
                         .finallyDo(
                                 () -> {
@@ -94,7 +95,7 @@ public class AutoCommands {
     }
 
     /**
-     * Drive to the outpost (via pathCommand), and wait up to 3 seconds for FUEL to be dumped.
+     * / Drive to the outpost (via pathCommand), and wait up to 3 seconds for FUEL to be dumped.
      *
      * @param pathCommand The command that follows the desired path to the outpost.
      * @return A command that follows a path (to the outpost), stops the robot, and waits 3 seconds.
