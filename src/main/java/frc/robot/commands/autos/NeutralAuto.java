@@ -82,7 +82,7 @@ public final class NeutralAuto {
                                                     firstFollow));
 
                             routine.observe(firstFollow.done())
-                                    .onTrue(AutoCommands.shootThenFollow(ctx, 4.0, secondFollow));
+                                    .onTrue(AutoCommands.shootThenFollow(ctx, 3.5, secondFollow));
 
                             routine.observe(secondFollow.done())
                                     .onTrue(AutoCommands.shootThenFollow(ctx, 3.0, secondFollow));
