@@ -93,6 +93,37 @@ public class AutoCommands {
                 DriveCommands.staticAimTowardsTarget(drive));
     }
 
+    public static Command shootRetracted(
+            Drive drive,
+            IntakeSuperstructure intake,
+            IndexerSuperstructure indexer,
+            Tower tower,
+            ShooterSuperstructure shooter,
+            double timeoutDuration) {
+        return Commands.deadline(
+                Commands.parallel(
+                                shooter.spinUpShooter().asProxy(),
+                                Commands.parallel(
+                                                indexer.shoot(),
+                                                tower.shoot(),
+                                                intake.retractIntake())
+                                        .onlyWhile(
+                                                shooter.readyToShoot.and(
+                                                        RobotState.getInstance().facingTarget))
+                                        .repeatedly())
+                        .withTimeout(timeoutDuration)
+                        .finallyDo(
+                                () -> {
+                                    CommandScheduler.getInstance()
+                                            .schedule(
+                                                    shooter.setFlywheelSpeed(
+                                                            RotationsPerSecond.zero()));
+                                    CommandScheduler.getInstance()
+                                            .schedule(shooter.setHoodAngle(Rotations.zero()));
+                                }),
+                DriveCommands.staticAimTowardsTarget(drive));
+    }
+
     /**
      * / Drive to the outpost (via pathCommand), and wait up to 3 seconds for FUEL to be dumped.
      *
