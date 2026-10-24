@@ -24,14 +24,14 @@ public record ChoreoTraj(
     public static final ChoreoTraj NeutralSafe1 = new ChoreoTraj(
         "NeutralSafe1",
         OptionalInt.empty(),
-        6.72747,
+        6.63855,
         new Pose2d(4.45, 7.39928, Rotation2d.fromRadians(-1.5708)),
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
     );
     public static final ChoreoTraj NeutralSafe2 = new ChoreoTraj(
         "NeutralSafe2",
         OptionalInt.empty(),
-        6.92525,
+        6.95427,
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368)),
         new Pose2d(3.12514, 7.30892, Rotation2d.fromRadians(-1.15368))
     );
