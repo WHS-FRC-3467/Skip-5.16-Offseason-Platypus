@@ -121,6 +121,19 @@ public class ShooterSuperstructure extends SubsystemBase implements AutoCloseabl
                     this.getName() + "/readyToShoot",
                     () -> readyToShootDebounder.calculate(shooterWithinTolerance.getAsBoolean()));
 
+    public final LoggedTrigger readyToShootAtCurrentTarget =
+            new LoggedTrigger(
+                    "RobotState/ReadyToShootAtCurrentTarget",
+                    readyToShoot.and(
+                            robotState
+                                    .shouldFeed
+                                    .and(robotState.facingFeedTarget)
+                                    .or(
+                                            robotState
+                                                    .shouldFeed
+                                                    .negate()
+                                                    .and(robotState.facingTarget))));
+
     public final LoggedTrigger atHubSetpoints =
             new LoggedTrigger(
                     this.getName() + "/atHubSetpoints",
