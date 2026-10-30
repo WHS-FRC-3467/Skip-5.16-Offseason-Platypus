@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.lib.util.CommandXboxControllerExtended;
 import frc.lib.util.FieldUtil;
 import frc.lib.util.LoggedDashboardChooser;
+import frc.lib.util.LoggedTunableNumber;
 import frc.lib.util.VisionOdometryCharacterizer;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.FullSendToPose;
@@ -77,6 +78,9 @@ import java.util.Set;
  */
 public class RobotContainer {
     private final RobotState robotState = RobotState.getInstance();
+
+    private static final LoggedTunableNumber TOWER_TIMEOUT =
+            new LoggedTunableNumber("Tower/Timeout", 0.5);
 
     // Subsystems
     public final Drive drive;
@@ -181,27 +185,43 @@ public class RobotContainer {
                 .rightTrigger()
                 .whileTrue(
                         Commands.parallel(
-                                Commands.either(
-                                        DriveCommands.joystickDriveFacingFutureTarget(
-                                                drive,
-                                                () -> -controller.getLeftY() * 0.4,
-                                                () -> -controller.getLeftX() * 0.4,
-                                                robotState.feedLookaheadSeconds),
-                                        DriveCommands.staticAimTowardsTarget(drive),
-                                        robotState.shouldFeed),
-                                shooter.spinUpShooter(),
-                                Commands.parallel(indexer.shoot(), tower.shoot())
-                                        .onlyWhile(
-                                                shooter.readyToShoot.and(
-                                                        robotState.facingFeedTarget))
-                                        .repeatedly()))
+                                        Commands.either(
+                                                DriveCommands.joystickDriveFacingFutureTarget(
+                                                        drive,
+                                                        () -> -controller.getLeftY() * 0.6,
+                                                        () -> -controller.getLeftX() * 0.6,
+                                                        robotState.feedLookaheadSeconds),
+                                                DriveCommands.joystickDriveFacingTarget(
+                                                        drive,
+                                                        () -> -controller.getLeftY() * 0.4,
+                                                        () -> -controller.getLeftX() * 0.4),
+                                                robotState.shouldFeed),
+                                        shooter.spinUpShooter(),
+                                        Commands.sequence(
+                                                Commands.defer(
+                                                                () ->
+                                                                        Commands.parallel(
+                                                                                        tower
+                                                                                                .eject(),
+                                                                                        indexer
+                                                                                                .eject())
+                                                                                .withTimeout(
+                                                                                        TOWER_TIMEOUT
+                                                                                                .get())
+                                                                                .withInterruptBehavior(
+                                                                                        InterruptionBehavior
+                                                                                                .kCancelSelf),
+                                                                Set.of(tower))
+                                                        .withDeadline(
+                                                                Commands.sequence(
+                                                                        Commands.waitSeconds(0.001),
+                                                                        Commands.waitUntil(
+                                                                                shooter.readyToShootAtCurrentTarget))),
+                                                Commands.parallel(indexer.shoot(), tower.shoot())))
+                                .withInterruptBehavior(InterruptionBehavior.kCancelIncoming))
                 .onFalse(
                         Commands.parallel(
-                                shooter.stopAndStow(),
-                                indexer.stopCommand(),
-                                tower.stopCommand(),
-                                intake.extendIntake(),
-                                shooter.retractHood()));
+                                shooter.stopAndStow(), indexer.stopCommand(), tower.stopCommand()));
 
         // Tap Right Bumper while Right Trigger held: Manually cycle intake
         controller
